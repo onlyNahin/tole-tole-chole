@@ -4,7 +4,7 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- 1. Profiles Table (Extends Supabase Auth users)
-CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
   username TEXT UNIQUE,
   full_name TEXT,
@@ -21,7 +21,7 @@ CREATE TABLE profiles (
 );
 
 -- 2. Connections (Matches)
-CREATE TABLE connections (
+CREATE TABLE IF NOT EXISTS connections (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_1 UUID REFERENCES profiles(id) ON DELETE CASCADE,
   user_2 UUID REFERENCES profiles(id) ON DELETE CASCADE,
@@ -31,7 +31,7 @@ CREATE TABLE connections (
 );
 
 -- 3. Messages
-CREATE TABLE messages (
+CREATE TABLE IF NOT EXISTS messages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   connection_id UUID REFERENCES connections(id) ON DELETE CASCADE,
   sender_id UUID REFERENCES profiles(id),
@@ -41,7 +41,7 @@ CREATE TABLE messages (
 );
 
 -- 4. Events
-CREATE TABLE events (
+CREATE TABLE IF NOT EXISTS events (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   title TEXT,
   description TEXT,
@@ -57,7 +57,7 @@ CREATE TABLE events (
 );
 
 -- 5. Support Tickets
-CREATE TABLE support_tickets (
+CREATE TABLE IF NOT EXISTS support_tickets (
   id TEXT PRIMARY KEY, -- e.g. #T-4092
   user_id UUID REFERENCES profiles(id),
   name TEXT,
@@ -69,7 +69,7 @@ CREATE TABLE support_tickets (
 );
 
 -- 6. Reports Table
-CREATE TABLE reports (
+CREATE TABLE IF NOT EXISTS reports (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_name TEXT,
   user_image TEXT,
@@ -81,7 +81,7 @@ CREATE TABLE reports (
 );
 
 -- 7. Site Config Table
-CREATE TABLE site_config (
+CREATE TABLE IF NOT EXISTS site_config (
   id TEXT PRIMARY KEY DEFAULT 'default',
   app_name TEXT DEFAULT 'Tole Tole Chole',
   primary_color TEXT DEFAULT '#E63946',
@@ -114,7 +114,7 @@ CREATE TABLE site_config (
 );
 
 -- 8. Moderation Queue Table
-CREATE TABLE moderation_queue (
+CREATE TABLE IF NOT EXISTS moderation_queue (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_name TEXT,
   image_url TEXT,
@@ -124,7 +124,7 @@ CREATE TABLE moderation_queue (
 );
 
 -- 9. System Logs Table
-CREATE TABLE system_logs (
+CREATE TABLE IF NOT EXISTS system_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   action TEXT,
   admin_name TEXT,
@@ -134,7 +134,7 @@ CREATE TABLE system_logs (
 );
 
 -- 10. Moderators Table
-CREATE TABLE moderators (
+CREATE TABLE IF NOT EXISTS moderators (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT,
   email TEXT UNIQUE,
@@ -147,7 +147,7 @@ CREATE TABLE moderators (
 );
 
 -- 11. Notifications Table
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   type TEXT,
   title TEXT,
@@ -171,28 +171,51 @@ ALTER TABLE moderators ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
+DROP POLICY IF EXISTS "Public profiles" ON profiles;
 CREATE POLICY "Public profiles" ON profiles FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users update own profile" ON profiles;
 CREATE POLICY "Users update own profile" ON profiles FOR UPDATE USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Connections access" ON connections;
 CREATE POLICY "Connections access" ON connections FOR SELECT USING (auth.uid() = user_1 OR auth.uid() = user_2);
+
+DROP POLICY IF EXISTS "Messages access" ON messages;
 CREATE POLICY "Messages access" ON messages FOR SELECT USING (
   EXISTS (SELECT 1 FROM connections WHERE id = messages.connection_id AND (user_1 = auth.uid() OR user_2 = auth.uid()))
 );
 
+DROP POLICY IF EXISTS "Public events" ON events;
 CREATE POLICY "Public events" ON events FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admins manage events" ON events;
 CREATE POLICY "Admins manage events" ON events FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Public site config" ON site_config;
 CREATE POLICY "Public site config" ON site_config FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admins update config" ON site_config;
 CREATE POLICY "Admins update config" ON site_config FOR UPDATE USING (true);
 
+DROP POLICY IF EXISTS "Users can submit support" ON support_tickets;
 CREATE POLICY "Users can submit support" ON support_tickets FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Admins manage support" ON support_tickets;
 CREATE POLICY "Admins manage support" ON support_tickets FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Users can submit reports" ON reports;
 CREATE POLICY "Users can submit reports" ON reports FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Admins manage reports" ON reports;
 CREATE POLICY "Admins manage reports" ON reports FOR ALL USING (true);
 
+DROP POLICY IF EXISTS "Admins manage moderation" ON moderation_queue;
 CREATE POLICY "Admins manage moderation" ON moderation_queue FOR ALL USING (true);
+
+DROP POLICY IF EXISTS "Admins manage logs" ON system_logs;
 CREATE POLICY "Admins manage logs" ON system_logs FOR ALL USING (true);
+
+DROP POLICY IF EXISTS "Admins manage moderators" ON moderators;
 CREATE POLICY "Admins manage moderators" ON moderators FOR ALL USING (true);
 
 -- Insert default site config
