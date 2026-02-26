@@ -170,6 +170,11 @@ export interface SiteConfig {
   interests: string[];
   // About Page Config
   aboutPage: AboutPageConfig;
+  // Platform Settings
+  maintenanceMode: boolean;
+  allowNewRegistrations: boolean;
+  globalAnnouncement: string;
+  freeDailySwipes: number;
 }
 
 export interface AdminNotification {

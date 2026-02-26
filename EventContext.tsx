@@ -26,10 +26,21 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     if (error) {
       console.error('Error fetching events:', error);
-      // Fallback to mock data for demo if table doesn't exist yet
-      setEvents(MOCK_EVENTS as AppEvent[]);
+      setEvents([]);
     } else {
-      setEvents(data as AppEvent[]);
+      setEvents((data || []).map(e => ({
+        id: e.id,
+        title: e.title,
+        description: e.description,
+        date: e.date,
+        time: e.time,
+        location: e.location,
+        image: e.image_url,
+        attendees: e.attendees_count,
+        category: e.category,
+        status: e.status,
+        price: e.price
+      } as AppEvent)));
     }
     setIsLoading(false);
   };
@@ -38,8 +49,19 @@ export const EventProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     fetchEvents();
   }, []);
 
-  const addEvent = async (event: AppEvent) => {
-    const { error } = await supabase.from('events').insert([event]);
+  const addEvent = async (event: Omit<AppEvent, 'id'>) => {
+    const { error } = await supabase.from('events').insert([{
+      title: event.title,
+      description: event.description,
+      date: event.date,
+      time: event.time,
+      location: event.location,
+      image_url: event.image,
+      attendees_count: event.attendees,
+      category: event.category,
+      status: event.status,
+      price: event.price
+    }]);
     if (error) console.error('Error adding event:', error);
     fetchEvents();
   };

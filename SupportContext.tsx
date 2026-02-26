@@ -24,10 +24,17 @@ export const SupportProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     if (error) {
       console.error('Error fetching tickets:', error);
-      // Fallback to mock data? For now, empty array
       setTickets([]);
     } else {
-      setTickets(data as SupportTicket[]);
+      setTickets((data || []).map(t => ({
+        id: t.id,
+        name: t.name,
+        email: t.email,
+        issue: t.issue,
+        status: t.status,
+        priority: t.priority,
+        date: new Date(t.created_at).toLocaleDateString()
+      } as SupportTicket)));
     }
     setIsLoading(false);
   };

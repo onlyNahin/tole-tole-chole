@@ -25,10 +25,17 @@ export const ReportProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     if (error) {
       console.error('Error fetching reports:', error);
-      // Fallback to mock data
-      setReports(REPORT_QUEUE);
+      setReports([]);
     } else {
-      setReports(data as Report[]);
+      setReports((data || []).map(r => ({
+        id: r.id,
+        user: r.user_name,
+        userImage: r.user_image,
+        reason: r.reason,
+        status: r.status,
+        date: r.date,
+        severity: r.severity
+      } as Report)));
     }
     setIsLoading(false);
   };
@@ -38,11 +45,9 @@ export const ReportProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, []);
 
   const addReport = async (user: string, userImage: string, reason: string) => {
-    const id = `#U-${Math.floor(Math.random() * 10000)}`;
     const { error } = await supabase.from('reports').insert([{
-      id,
-      user,
-      userImage,
+      user_name: user,
+      user_image: userImage,
       reason,
       status: 'Pending',
       severity: 'medium'

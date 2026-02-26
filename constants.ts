@@ -14,7 +14,7 @@ export const INTERESTS_LIST = [
 
 // Mock list of usernames that are already taken in the system
 export const TAKEN_USERNAMES = [
-  'admin', 'root', 'support', 'help', 'info', 'toletole', 
+  'admin', 'root', 'support', 'help', 'info', 'toletole',
   'sadia', 'tanvir', 'nila', 'arifur', 'mitu', 'kuddus', 'laila', 'sojol',
   'test', 'user', 'demo'
 ];
@@ -67,12 +67,12 @@ export const PROFILES: UserProfile[] = [
 export const MOCK_CHATS: ChatSession[] = [
   {
     id: 'chat-1',
-    user: { 
-      id: 'user-1', 
-      name: 'সাদিয়া', 
-      image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=60', 
+    user: {
+      id: 'user-1',
+      name: 'সাদিয়া',
+      image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=60',
       isOnline: true,
-      lastActive: 'Active now' 
+      lastActive: 'Active now'
     },
     lastMessage: 'কি খবর? রাজশাহী কলেজ গেট এ আসবা?',
     timestamp: '2m ago',
@@ -80,10 +80,10 @@ export const MOCK_CHATS: ChatSession[] = [
   },
   {
     id: 'chat-2',
-    user: { 
-      id: 'user-2', 
-      name: 'তানভীর', 
-      image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&auto=format&fit=crop&q=60', 
+    user: {
+      id: 'user-2',
+      name: 'তানভীর',
+      image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&auto=format&fit=crop&q=60',
       isOnline: false,
       lastActive: 'Active 1h ago'
     },
@@ -93,10 +93,10 @@ export const MOCK_CHATS: ChatSession[] = [
   },
   {
     id: 'chat-3',
-    user: { 
-      id: 'user-3', 
-      name: 'নীলা', 
-      image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800&auto=format&fit=crop&q=60', 
+    user: {
+      id: 'user-3',
+      name: 'নীলা',
+      image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800&auto=format&fit=crop&q=60',
       isOnline: true,
       lastActive: 'Active 5m ago'
     },
@@ -287,33 +287,33 @@ export const ADMIN_USERS: UserProfile[] = [
 ];
 
 export const MOCK_MODERATORS: Moderator[] = [
-  { 
-    id: 'mod-1', 
-    name: 'Admin User', 
-    email: 'admin@toletole.com', 
-    role: 'Senior Moderator', 
-    status: 'Active', 
-    image: 'https://i.pravatar.cc/150?u=admin', 
+  {
+    id: 'mod-1',
+    name: 'Admin User',
+    email: 'admin@toletole.com',
+    role: 'Senior Moderator',
+    status: 'Active',
+    image: 'https://i.pravatar.cc/150?u=admin',
     permissions: ['ban_users', 'review_reports', 'manage_content', 'view_analytics'],
     lastActive: 'Just now'
   },
-  { 
-    id: 'mod-2', 
-    name: 'Karim Benzema', 
-    email: 'karim.mod@toletole.com', 
-    role: 'Moderator', 
-    status: 'Active', 
-    image: 'https://i.pravatar.cc/150?u=mod1', 
+  {
+    id: 'mod-2',
+    name: 'Karim Benzema',
+    email: 'karim.mod@toletole.com',
+    role: 'Moderator',
+    status: 'Active',
+    image: 'https://i.pravatar.cc/150?u=mod1',
     permissions: ['review_reports', 'manage_content'],
     lastActive: '2 hours ago'
   },
-  { 
-    id: 'mod-3', 
-    name: 'Salma Hayek', 
-    email: 'salma.support@toletole.com', 
-    role: 'Support', 
-    status: 'Inactive', 
-    image: 'https://i.pravatar.cc/150?u=mod2', 
+  {
+    id: 'mod-3',
+    name: 'Salma Hayek',
+    email: 'salma.support@toletole.com',
+    role: 'Support',
+    status: 'Inactive',
+    image: 'https://i.pravatar.cc/150?u=mod2',
     permissions: ['manage_content'],
     lastActive: '2 days ago'
   }
@@ -397,7 +397,11 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
     contactTitle: 'যোগাযোগ করুন',
     contactSubtitle: 'কোনো প্রশ্ন বা পরামর্শ আছে? আমাদের জানান। আমরা আপনার অপেক্ষায় আছি।',
     contactEmail: 'contact@toletolechole.com'
-  }
+  },
+  maintenanceMode: false,
+  allowNewRegistrations: true,
+  globalAnnouncement: '',
+  freeDailySwipes: 20
 };
 
 export const ADMIN_NOTIFICATIONS: AdminNotification[] = [
