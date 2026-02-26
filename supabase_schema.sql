@@ -180,20 +180,20 @@ CREATE POLICY "Messages access" ON messages FOR SELECT USING (
 );
 
 CREATE POLICY "Public events" ON events FOR SELECT USING (true);
-CREATE POLICY "Admins manage events" ON events ALL USING (true);
+CREATE POLICY "Admins manage events" ON events FOR ALL USING (true);
 
 CREATE POLICY "Public site config" ON site_config FOR SELECT USING (true);
 CREATE POLICY "Admins update config" ON site_config FOR UPDATE USING (true);
 
 CREATE POLICY "Users can submit support" ON support_tickets FOR INSERT WITH CHECK (true);
-CREATE POLICY "Admins manage support" ON support_tickets ALL USING (true);
+CREATE POLICY "Admins manage support" ON support_tickets FOR ALL USING (true);
 
 CREATE POLICY "Users can submit reports" ON reports FOR INSERT WITH CHECK (true);
-CREATE POLICY "Admins manage reports" ON reports ALL USING (true);
+CREATE POLICY "Admins manage reports" ON reports FOR ALL USING (true);
 
-CREATE POLICY "Admins manage moderation" ON moderation_queue ALL USING (true);
-CREATE POLICY "Admins manage logs" ON system_logs ALL USING (true);
-CREATE POLICY "Admins manage moderators" ON moderators ALL USING (true);
+CREATE POLICY "Admins manage moderation" ON moderation_queue FOR ALL USING (true);
+CREATE POLICY "Admins manage logs" ON system_logs FOR ALL USING (true);
+CREATE POLICY "Admins manage moderators" ON moderators FOR ALL USING (true);
 
 -- Insert default site config
 INSERT INTO site_config (id, app_name, primary_color, secondary_color)
