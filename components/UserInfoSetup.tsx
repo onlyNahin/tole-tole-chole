@@ -1,10 +1,12 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import AuthLayout from './AuthLayout';
 
 const UserInfoSetup: React.FC = () => {
   const navigate = useNavigate();
+  const { updateProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -24,31 +26,46 @@ const UserInfoSetup: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API save
-    console.log('User Info Submitted:', formData);
-    
-    setTimeout(() => {
-      setIsLoading(false);
+
+    // Save to Supabase
+    const { error } = await updateProfile({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      name: `${formData.firstName} ${formData.lastName}`,
+      location: formData.area,
+      education: formData.education,
+      secondaryPhoneNumber: formData.secondaryMobile,
+      gender: formData.gender as any,
+      religion: formData.religion as any,
+      age: parseInt(formData.age),
+      bio: formData.bio,
+      socialLink: formData.socialLink
+    });
+
+    setIsLoading(false);
+    if (error) {
+      alert('আপনার তথ্য সংরক্ষণে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+      console.error('Setup Error:', error);
+    } else {
       navigate('/app');
-    }, 1500);
+    }
   };
 
   return (
-    <AuthLayout 
-      title="আপনার তথ্য" 
+    <AuthLayout
+      title="আপনার তথ্য"
       subtitle="প্রোফাইলটি সুন্দরভাবে সাজিয়ে নিন"
     >
       <form onSubmit={handleSubmit} className="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar pr-1">
-        
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-1">নামের প্রথম অংশ</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="firstName"
               required
               value={formData.firstName}
@@ -59,8 +76,8 @@ const UserInfoSetup: React.FC = () => {
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-1">নামের শেষ অংশ</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="lastName"
               required
               value={formData.lastName}
@@ -73,8 +90,8 @@ const UserInfoSetup: React.FC = () => {
 
         <div>
           <label className="block text-xs font-bold text-gray-500 mb-1">এলাকা / ঠিকানা</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="area"
             required
             value={formData.area}
@@ -86,8 +103,8 @@ const UserInfoSetup: React.FC = () => {
 
         <div>
           <label className="block text-xs font-bold text-gray-500 mb-1">শিক্ষা প্রতিষ্ঠান (Education)</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="education"
             value={formData.education}
             onChange={handleChange}
@@ -98,8 +115,8 @@ const UserInfoSetup: React.FC = () => {
 
         <div>
           <label className="block text-xs font-bold text-gray-500 mb-1">বিকল্প মোবাইল নম্বর (ঐচ্ছিক)</label>
-          <input 
-            type="tel" 
+          <input
+            type="tel"
             name="secondaryMobile"
             value={formData.secondaryMobile}
             onChange={handleChange}
@@ -111,7 +128,7 @@ const UserInfoSetup: React.FC = () => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-1">লিঙ্গ</label>
-            <select 
+            <select
               name="gender"
               value={formData.gender}
               onChange={handleChange}
@@ -124,8 +141,8 @@ const UserInfoSetup: React.FC = () => {
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-1">বয়স</label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               name="age"
               required
               min="18"
@@ -140,7 +157,7 @@ const UserInfoSetup: React.FC = () => {
 
         <div>
           <label className="block text-xs font-bold text-gray-500 mb-1">ধর্ম</label>
-          <select 
+          <select
             name="religion"
             value={formData.religion}
             onChange={handleChange}
@@ -155,7 +172,7 @@ const UserInfoSetup: React.FC = () => {
 
         <div>
           <label className="block text-xs font-bold text-gray-500 mb-1">নিজের সম্পর্কে (বায়ো)</label>
-          <textarea 
+          <textarea
             name="bio"
             required
             rows={3}
@@ -168,8 +185,8 @@ const UserInfoSetup: React.FC = () => {
 
         <div>
           <label className="block text-xs font-bold text-gray-500 mb-1">সোশ্যাল মিডিয়া লিংক (ঐচ্ছিক)</label>
-          <input 
-            type="url" 
+          <input
+            type="url"
             name="socialLink"
             value={formData.socialLink}
             onChange={handleChange}
@@ -179,8 +196,8 @@ const UserInfoSetup: React.FC = () => {
         </div>
 
         <div className="pt-4">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={isLoading}
             className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/30 transform hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
           >
